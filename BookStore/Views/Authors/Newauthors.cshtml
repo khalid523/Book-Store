@@ -1,0 +1,169 @@
+﻿@model Vmauthoers
+@{
+    Layout = "~/Views/Shared/LayoutPage.cshtml";
+}
+
+@section Head{
+
+
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $(".liedit").click(function () {
+                debugger;
+                var authorId = $(this).parent().parent().find(".authorId").text()
+                $.ajax({
+                    type: 'get',
+                    url: '/BookStore/Authors/EditAjax?Id=' + authorId,
+                    success: function (data) {
+                        debugger;
+                        $("#txtName").val(data.name);
+
+                        $("#txtImage").val(data.image);
+
+                        $("#liationalities").val(data.nationality_id);
+                    },
+                    error: function () {
+                        alert("error")
+                    }
+
+
+                });
+                $("#save").hide();
+                $("#update").show();
+                $("#myModal").modal("show");
+            });
+            $("#btnshowmodel").click(function () {
+                $("#txtName").val("");
+
+                $("#txtImage").val("");
+
+                $("#liationalities").val("");
+
+                $("#save").show();
+                $("#update").hide();
+            });
+
+
+        });
+
+
+
+    </script>
+
+
+
+}
+
+
+
+
+@section Body{
+    <form method="post" enctype="multipart/form-data">
+
+        <div class="container">
+
+            <button type="button" class="btn btn-primary pull-left" data-toggle="modal" data-target="#myModal" id="btnshowmodel">>Add New Author</button>
+
+
+            <div class="modal fade" id="myModal" data-keyboard="false" data-backdrop="static" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Author</h4>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" asp-for="authors.Id" />
+                            <div class="row" style="margin-top:5px">
+                                <div class="col-sm-1">
+                                    <span>Name</span>
+                                </div>
+                                <div class="col-sm-5">
+                                    <input type="text" class="form-control" asp-for="authors.Name" id="txtName" />
+                                </div>
+                            </div>
+                            <div class="row" style="margin-top:5px">
+                                <div class="col-sm-1">
+                                    <span>Image</span>
+                                </div>
+                                <div class="col-sm-5">
+                                    <input type="file" asp-for="authors.Image" id="txtImage" />
+
+                                </div>
+                            </div>
+                            <div class="row" style="margin-top:5px">
+                                <div class="col-sm-1">
+                                    <span>Nationality</span>
+                                </div>
+                                <div class="col-sm-5">
+                                    <select class="form-control" asp-items='new SelectList(Model.liationalities,"Id","Name")' asp-for="authors.nationality_id" id="liationalities"></select>
+                                </div>
+
+                            </div>
+                            <div class="modal-footer">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <input type="submit" value="Save" class="btn btn-primary" asp-action="save" id="save" />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <input type="submit" value="Update" class="btn btn-primary" asp-action="Update" id="update" />
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+
+
+
+        <div class="row">
+            <div class="col-sm-12">
+                <table class="table table-bordered table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>#Id</th>
+                            <th>Authores Name</th>
+                            <th>Authores Natioality</th>
+                            <th>Authores Image</th>
+                            <th>Authores Action</th>
+
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (Authors item in Model.liauthors)
+                        {
+
+                            <tr>
+                                <td class="authorId">@item.Id</td>
+                                <td>@item.Name</td>
+                                <td>@item.nationality.Name</td>
+                                <td>
+                                    <img src="@item.ImagePath" style="width:80px;height:80px" />
+                                </td>
+                                <td>
+                                    <a asp-action="Delete" asp-route-Id="@item.Id">Delete </a>
+                                    <a class="liedit"> Edit</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </form>
+
+}

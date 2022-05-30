@@ -1,0 +1,140 @@
+﻿@model Vmcatrgory
+@{
+    Layout = "~/Views/Shared/LayoutPage.cshtml";
+}
+@section Head{
+
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $(".liedit").click(function () {
+                debugger;
+                var carteogryId = $(this).parent().parent().find(".carteogryId").text()
+                $.ajax({
+                    type: 'get',
+                    url: '/BookStore/Category/EditAjax?Id=' + carteogryId,
+                    success: function (data) {
+                        debugger;
+                        $("#txtName").val(data.name);
+                        $("#txtcode").val(data.code);
+                    },
+                    error: function () {
+                        alert("error")
+                    }
+
+
+                });
+                $("#save").hide();
+                $("#update").show();
+                $("#myModal").modal("show");
+            });
+            $("#btnshowmodel").click(function () {
+                $("#txtName").val("");
+                $("#txtcode").val("");
+
+                $("#save").show();
+                $("#update").hide();
+            });
+
+
+        });
+
+
+
+    </script>
+
+
+
+}
+
+@section Body{
+    <form method="post">
+
+        <div class="container">
+
+
+            <button type="button" class="btn btn-primary pull-left" data-toggle="modal" data-target="#myModal" id="btnshowmodel"> Add New Cateogry </button>
+
+
+            <div class="modal fade" id="myModal" data-keyboard="false" data-backdrop="static" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" id="btnclosemodel">&times;</button>
+                            <h4 class="modal-title">Cateogry</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-sm-1">
+                                    Category Name
+                                </div>
+                                <div class="col-sm-5">
+                                    <input type="text" class="form-control" id="txtName" asp-for="category.Name" />
+                                </div>
+
+
+                                <input hidden="hidden" id="txtId" asp-for="category.Id" />
+
+                                <div class="col-sm-1">
+                                    Category Code
+                                </div>
+                                <div class="col-sm-5">
+                                    <input type="text" class="form-control" asp-for="category.code" id="txtcode" />
+                                </div>
+
+                            </div>
+                            <div class="modal-footer">
+                                <div class="col-sm-2">
+                                    <input type="submit" id="save" value="save" class="btn btn-primary" asp-action="save" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <input type="submit" id="update" value="Update" class="btn btn-primary" asp-action="Update" />
+                                </div>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+
+
+
+        <div class="row">
+            <div class="col-sm-12">
+                <table class="table table-bordered table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>#Id</th>
+                            <th>Categroy Name</th>
+                            <th>Categroy Code</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (Category item in Model.licateogrries)
+                        {
+
+                            <tr>
+                                <td class="carteogryId">@item.Id</td>
+                                <td>@item.Name</td>
+                                <td>@item.code</td>
+                                <td>
+                                    <a asp-action="Delete" asp-route-Id="@item.Id">Delete </a>
+                                    <a class="liedit"> Edit</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </form>
+}
